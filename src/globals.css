@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* === BASE === */
+  --background: #FFFFFF;
+  --foreground: #00134E; /* azulEscuro — dark navy reads as primary text color throughout the guide */
+
+  /* === CARD === */
+  --card: #FFFFFF;
+  --card-foreground: #00134E;
+
+  /* === POPOVER / DROPDOWN / TOOLTIP === */
+  --popover: #FFFFFF;
+  --popover-foreground: #00134E;
+
+  /* === PRIMARY === */
+  --primary: #18328A;          /* azul */
+  --primary-foreground: #FFFFFF; /* approved: azul bg -> branco, always */
+
+  /* === SECONDARY (light tint) === */
+  --secondary: #DAF7EF;        /* azulClaro */
+  --secondary-foreground: #00134E; /* approved: azulClaro bg -> azulEscuro, always */
+
+  /* === MUTED ===
+     Confirmed by design (Aug 2026): subtle azulEscuro tint (Option B).
+     Not in the original brand guide, but validated before adoption. */
+  --muted: #F5F6FA;
+  --muted-foreground: #565D78;
+
+  /* === ACCENT (turquoise, headings/dividers only) === */
+  --accent: #00B7A4;           /* turquesa */
+  --accent-foreground: #00134E; /* approved: turquesa bg -> azulEscuro, always */
+
+  /* === DESTRUCTIVE ===
+     Confirmed by design (Aug 2026): classic red, chosen for clear
+     distinction from the brand's Verde and unambiguous urgency signaling. */
+  --destructive: #D14343;
+  --destructive-foreground: #FFFFFF;
+
+  /* === BORDERS & INPUTS ===
+     Confirmed by design (Aug 2026): subtle azulEscuro tint (Option B). */
+  --border: #D3D7E4;
+  --input: #D3D7E4;
+  --ring: #18328A;             /* azul, matches primary */
+
+  /* === BORDER RADIUS ===
+     Confirmed by design (Aug 2026): 12px. Not numerically specified in the
+     brand guide, but validated against the "Box" graphic element (page 58)
+     and approved as the project's standard radius. */
+  --radius: 0.75rem;
+
+  /* === CHART COLORS === */
+  --chart-1: #18328A; /* azul */
+  --chart-2: #00B7A4; /* turquesa */
+  --chart-3: #90F252; /* verde */
+  --chart-4: #00134E; /* azulEscuro */
+  --chart-5: #5B6270; /* neutral gray, generated */
+
+  /* === BRAND-SPECIFIC EXTRAS (not part of the shadcn default set) === */
+  --brand-verde: #90F252;
+  --brand-verde-foreground: #00134E; /* NEVER white — see contrast-rules.ts */
+  --brand-azul-escuro: #00134E;
+  --brand-azul-escuro-foreground-verde: #90F252; /* approved large+body per table */
+  --brand-azul-claro: #DAF7EF;
+}
+
+.dark {
+  /* DEFERRED by design (Aug 2026): dark mode is not a confirmed product
+     requirement yet, but the team wants a working scaffold ready for when
+     it becomes one. These values are intentionally preliminary — inverting
+     the light tokens using the same 5 brand colors — and should be treated
+     as a starting point for a future design pass, not a shipped decision.
+     Revisit when dark mode becomes a real requirement. */
+  --background: #00134E;       /* azulEscuro as page background */
+  --foreground: #DAF7EF;       /* azulClaro reads well on azulEscuro, per table */
+
+  --card: #122568;             /* slightly lighter navy, generated */
+  --card-foreground: #DAF7EF;
+
+  --popover: #122568;
+  --popover-foreground: #DAF7EF;
+
+  --primary: #90F252;          /* verde reads as an accent on dark bg per table */
+  --primary-foreground: #00134E; /* verde pairs with azulEscuro text, never white */
+
+  --secondary: #18328A;
+  --secondary-foreground: #FFFFFF;
+
+  --muted: #122568;
+  --muted-foreground: #9AA1AC;
+
+  --accent: #00B7A4;
+  --accent-foreground: #00134E;
+
+  --destructive: #D14343;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #233B62;
+  --input: #233B62;
+  --ring: #90F252;
+}
+
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Figtree', Arial, sans-serif; /* Figtree per guide, Arial as documented system fallback */
+}
