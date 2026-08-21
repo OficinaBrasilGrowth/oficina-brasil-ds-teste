@@ -10,6 +10,29 @@ import { DatePicker, type DateRange } from './components/date-picker'
 import { FileUploadButton } from './components/file-upload-button'
 import { Considerations, ConsiderationsContent } from './components/considerations'
 import { ChartCard } from './components/chart-card'
+import { Input } from './components/input'
+import { Label } from './components/label'
+import { Textarea } from './components/textarea'
+import { DataTable, type Column } from './components/data-table'
+
+interface Reparador {
+  id: string
+  nome: string
+  cidade: string
+  status: string
+}
+
+const reparadores: Reparador[] = [
+  { id: '1', nome: 'Oficina Brasil SP', cidade: 'São Paulo', status: 'Ativo' },
+  { id: '2', nome: 'Auto Center RJ', cidade: 'Rio de Janeiro', status: 'Ativo' },
+  { id: '3', nome: 'Mecânica Sul', cidade: 'Porto Alegre', status: 'Pendente' },
+]
+
+const tableColumns: Column<Reparador>[] = [
+  { key: 'nome', header: 'Nome', sortable: true, accessor: (r) => r.nome },
+  { key: 'cidade', header: 'Cidade', sortable: true, accessor: (r) => r.cidade },
+  { key: 'status', header: 'Status' },
+]
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -92,6 +115,28 @@ export default function App() {
         <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Confirmar exclusão">
           Esta ação remove o banner de todas as campanhas ativas. Não dá para desfazer.
         </Modal>
+      </Section>
+
+      <Section title="Formulário">
+        <div style={{ width: 320 }}>
+          <Label htmlFor="nome-teste" required>Nome</Label>
+          <Input id="nome-teste" placeholder="Nome do reparador" />
+        </div>
+        <div style={{ width: 320 }}>
+          <Label htmlFor="email-teste" required>Email</Label>
+          <Input id="email-teste" type="email" placeholder="email@exemplo.com" error="Formato de email inválido" />
+        </div>
+        <div style={{ width: 320 }}>
+          <Label htmlFor="obs-teste">Observações</Label>
+          <Textarea id="obs-teste" placeholder="Detalhes adicionais" helperText="Opcional" />
+        </div>
+      </Section>
+
+      <Section title="Tabela de dados">
+        <div style={{ width: '100%' }}>
+          <p style={{ fontSize: 12, color: '#5B6270', marginBottom: 6 }}>Clique em "Nome" ou "Cidade" para ordenar</p>
+          <DataTable columns={tableColumns} data={reparadores} rowKey={(r) => r.id} />
+        </div>
       </Section>
 
       <Section title="Navegação">

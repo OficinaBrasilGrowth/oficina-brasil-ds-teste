@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from './icons'
 
 // Interaction pattern referenced from Ant Design's RangePicker (calendar
@@ -50,6 +50,20 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
   const [viewYear, setViewYear] = useState(value.start?.getFullYear() ?? new Date().getFullYear())
   const [viewMonth, setViewMonth] = useState(value.start?.getMonth() ?? new Date().getMonth())
   const [draft, setDraft] = useState<DateRange>(value)
+
+  // Accessibility: Escape closes the popover, consistent with BrandSelect
+  // and Modal. NOTE: full arrow-key navigation across the day grid (per
+  // WAI-ARIA APG's grid pattern) is NOT implemented yet — flagged as a
+  // follow-up, not silently skipped. Today only Tab reaches day buttons
+  // in DOM order.
+  useEffect(() => {
+    if (!open) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [open])
 
   function handleDayClick(day: number) {
     const clicked = new Date(viewYear, viewMonth, day)

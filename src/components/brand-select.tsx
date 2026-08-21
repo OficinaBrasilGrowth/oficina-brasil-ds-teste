@@ -35,7 +35,9 @@ function normalize(text: string) {
 export function BrandSelect({ options, value, onChange, placeholder }: BrandSelectProps) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [highlighted, setHighlighted] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const filtered = useMemo(() => {
     if (!query) return options
@@ -55,11 +57,48 @@ export function BrandSelect({ options, value, onChange, placeholder }: BrandSele
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  useEffect(() => {
+    setHighlighted(0)
+  }, [query, open])
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Escape') {
+      setOpen(false)
+      setQuery('')
+      return
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setHighlighted((h) => Math.min(h + 1, filtered.length - 1))
+      return
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setHighlighted((h) => Math.max(h - 1, 0))
+      return
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const opt = filtered[highlighted]
+      if (opt) {
+        onChange(opt.value)
+        setOpen(false)
+        setQuery('')
+      }
+    }
+  }
+
   return (
     <div ref={containerRef} className="relative w-64">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          setOpen((o) => !o)
+          setTimeout(() => inputRef.current?.focus(), 0)
+        }}
+        onKeyDown={handleKeyDown}
+        aria-expanded={open}
+        aria-haspopup="listbox"
         className="w-full flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm bg-background transition-shadow"
         style={{ borderColor: 'var(--border)', boxShadow: open ? '0 0 0 3px rgba(24,50,138,0.12)' : 'none' }}
       >
@@ -87,13 +126,16 @@ export function BrandSelect({ options, value, onChange, placeholder }: BrandSele
 
       {open && (
         <div
+          role="listbox"
           className="absolute z-10 mt-1.5 w-full rounded-lg border bg-popover overflow-hidden"
           style={{ borderColor: 'var(--border)', boxShadow: '0 4px 6px rgba(10,10,10,0.05), 0 10px 24px rgba(10,10,10,0.08)' }}
         >
           <input
+            ref={inputRef}
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Buscar..."
             className="w-full px-3 py-2 text-sm border-b outline-none bg-transparent"
             style={{ borderColor: 'var(--border)' }}
@@ -102,10 +144,13 @@ export function BrandSelect({ options, value, onChange, placeholder }: BrandSele
             {filtered.length === 0 && (
               <li className="px-3 py-2 text-sm text-muted-foreground">Nenhum resultado</li>
             )}
-            {filtered.map((opt) => (
+            {filtered.map((opt, i) => (
               <li key={opt.value}>
                 <button
                   type="button"
+                  role="option"
+                  aria-selected={opt.value === value}
+                  onMouseEnter={() => setHighlighted(i)}
                   onClick={() => {
                     onChange(opt.value)
                     setOpen(false)
@@ -115,14 +160,10 @@ export function BrandSelect({ options, value, onChange, placeholder }: BrandSele
                   style={
                     opt.value === value
                       ? { backgroundColor: 'var(--secondary)', color: 'var(--secondary-foreground)' }
+                      : i === highlighted
+                      ? { backgroundColor: 'var(--muted)' }
                       : undefined
                   }
-                  onMouseEnter={(e) => {
-                    if (opt.value !== value) e.currentTarget.style.backgroundColor = 'var(--muted)'
-                  }}
-                  onMouseLeave={(e) => {
-                    if (opt.value !== value) e.currentTarget.style.backgroundColor = 'transparent'
-                  }}
                 >
                   {opt.label}
                 </button>
