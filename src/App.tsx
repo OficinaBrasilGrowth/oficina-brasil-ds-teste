@@ -14,6 +14,9 @@ import { Input } from './components/input'
 import { Label } from './components/label'
 import { Textarea } from './components/textarea'
 import { DataTable, type Column } from './components/data-table'
+import { Tabs } from './components/tabs'
+import { ToastProvider, useToast } from './components/toast'
+import { DropdownMenu } from './components/dropdown-menu'
 
 interface Reparador {
   id: string
@@ -47,6 +50,18 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
+function ToastTrigger() {
+  const { show } = useToast()
+  return (
+    <button
+      onClick={() => show('Ação concluída com sucesso!', 'success')}
+      style={{ background: '#00B7A4', color: '#00134E', border: 'none', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+    >
+      Disparar notificação
+    </button>
+  )
+}
+
 export default function App() {
   const [range, setRange] = useState<DateRange>({ start: null, end: null })
   const [page, setPage] = useState(1)
@@ -54,6 +69,7 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
+    <ToastProvider>
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 32px', fontFamily: 'Figtree, sans-serif' }}>
       <header style={{ marginBottom: 40 }}>
         <p style={{ fontSize: 28, fontWeight: 700, color: '#00134E', margin: 0 }}>Oficina Brasil — Design System</p>
@@ -145,6 +161,31 @@ export default function App() {
         </div>
       </Section>
 
+      <Section title="Abas e menus">
+        <div style={{ width: '100%' }}>
+          <p style={{ fontSize: 12, color: '#5B6270', marginBottom: 6 }}>Tabs — use as setas ← → do teclado depois de clicar numa aba</p>
+          <Tabs
+            items={[
+              { key: 'geral', label: 'Geral', content: <p style={{ fontSize: 13, color: '#5B6270' }}>Conteúdo da aba Geral</p> },
+              { key: 'seguranca', label: 'Segurança', content: <p style={{ fontSize: 13, color: '#5B6270' }}>Conteúdo da aba Segurança</p> },
+              { key: 'notif', label: 'Notificações', content: <p style={{ fontSize: 13, color: '#5B6270' }}>Conteúdo da aba Notificações</p> },
+            ]}
+          />
+        </div>
+        <div>
+          <p style={{ fontSize: 12, color: '#5B6270', marginBottom: 6 }}>Menu suspenso — setas ↑↓, Enter, Escape</p>
+          <DropdownMenu
+            trigger={<span style={{ padding: '8px 14px', border: '1px solid #ddd', borderRadius: 8, display: 'inline-block', fontSize: 13 }}>Ações ▾</span>}
+            items={[
+              { key: 'editar', label: 'Editar', onSelect: () => {} },
+              { key: 'duplicar', label: 'Duplicar', onSelect: () => {} },
+              { key: 'excluir', label: 'Excluir', onSelect: () => {}, destructive: true },
+            ]}
+          />
+        </div>
+        <ToastTrigger />
+      </Section>
+
       <Section title="Bloco de análise">
         <div style={{ width: '100%' }}>
           <Considerations>
@@ -154,5 +195,6 @@ export default function App() {
         </div>
       </Section>
     </div>
+    </ToastProvider>
   )
 }
